@@ -57,8 +57,7 @@ uint8_t write_i2c_8b (uint8_t data);
  * @return uint8_t - успешность выполнения
  * [0] - успешно
  * [1] - ошибка. Не успешный старт
- * [2] - ошибка. Не успешный запрос данных
- * [3] - ошибка. Не успешный старт чтения данных
+ * [2] - ошибка. Не успешный старт чтения данных
  */
 uint8_t a_read_i2c_24b (uint32_t *data, uint8_t reg, uint8_t addr);
 
@@ -71,9 +70,15 @@ uint8_t a_read_i2c_24b (uint32_t *data, uint8_t reg, uint8_t addr);
  * @return uint8_t - успешность выполнения
  * [0] - успешно
  * [1] - ошибка. Не успешный старт
- * [2] - ошибка. Не успешный запрос данных
- * [3] - ошибка. Не успешный старт чтения данных
+ * [2] - ошибка. Не успешный старт чтения данных
  */
 uint8_t a_read_i2c_8b (uint8_t *data, uint8_t reg, uint8_t addr);
+
+uint8_t a_read_i2c_16b (uint16_t *data, uint8_t reg, uint8_t addr);
+
+uint8_t a_write_i2c_8b (uint8_t data, uint8_t addr);
+
+uint8_t a_write_reg_i2c_8b (uint8_t data, uint8_t reg, uint8_t addr);
+
 
 #endif

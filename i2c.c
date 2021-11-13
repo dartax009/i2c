@@ -75,21 +75,18 @@ uint8_t read_i2c_8b ()
 
 uint8_t a_read_i2c_24b (uint32_t *data, uint8_t reg, uint8_t addr)
 {
-	if (start_i2c(addr, WRITE_I2C) != 0 )		//Если инициализация успешна
-		return 1;		//Не удачно дернули первый раз
+	if ( a_write_i2c_8b(reg, addr) )
+		return 1;		//Не удачно отправили регистр
 
-	if (write_i2c_8b(reg) == 1)
-		return 2; 		//Не передали регистр
-	stop_i2c();
-
-	if (start_i2c(addr, READ_I2C) !=0 )
-		return 3;		//Не удачно прочитали
+	if ( start_i2c(addr, READ_I2C) )
+		return 2;		//Не удачно запросили чтение
 
 	*data = read_i2c_8b();
 	*data <<= 8;
 	*data |= read_i2c_8b();
 	*data <<= 8;
 	*data |= read_i2c_8b();
+
 	stop_i2c();
 
 	return 0;
@@ -97,17 +94,61 @@ uint8_t a_read_i2c_24b (uint32_t *data, uint8_t reg, uint8_t addr)
 
 uint8_t a_read_i2c_8b (uint8_t *data, uint8_t reg, uint8_t addr)
 {
-	if (start_i2c(addr, WRITE_I2C) != 0)
-		return 1;
+	if ( a_write_i2c_8b(reg, addr) )
+		return 1;		//Не удачно отправили регистр
 
-	if (write_i2c_8b(reg) == 1)
-		return 2;
-	stop_i2c();
-
-	if (start_i2c(addr, READ_I2C) != 0 )
-		return 3;
+	if ( start_i2c(addr, READ_I2C) )
+		return 2;		//Не удачно запросили чтение
 
 	*data = read_i2c_8b();
+
+	stop_i2c();
+
+	return 0;
+}
+
+uint8_t a_read_i2c_16b (uint16_t *data, uint8_t reg, uint8_t addr)
+{
+	if ( a_write_i2c_8b(reg, addr) )
+		return 1;		//Не удачно отправили регистр
+
+	if ( start_i2c(addr, READ_I2C) )
+		return 2;		//Не удачно запросили чтение
+
+	*data = read_i2c_8b();
+	*data <<= 8;
+	*data |= read_i2c_8b();
+
+	stop_i2c();
+
+	return 0;
+}
+
+uint8_t a_write_i2c_8b (uint8_t data, uint8_t addr)
+{
+	if ( start_i2c(addr, WRITE_I2C) )
+		return 1;		//Не удачная инициализация старата
+
+	if ( write_i2c_8b(data) )
+		return 2;		//Не удачная отправка данных
+
+	stop_i2c();
+
+	return 0;
+}
+
+uint8_t a_write_reg_i2c_8b (uint8_t data, uint8_t reg, uint8_t addr)
+{
+	if ( start_i2c(addr, WRITE_I2C) )
+		return 1;		//Не удачная инициализация старата
+
+	if ( write_i2c_8b(reg) )
+		return 2;		//Не удачная отправка регистра
+
+	if ( write_i2c_8b(data) )
+		return 3;		//Не удачная отправка данных
+
+	stop_i2c();
 
 	return 0;
 }
